@@ -6,6 +6,7 @@ import (
 
 type CodeErr int
 
+//go:generate mockgen -destination=mocks/mock_CodeErrEntity.go -package=mocks . CodeErrEntity
 type CodeErrEntity interface {
 	Error() string
 	Code() string

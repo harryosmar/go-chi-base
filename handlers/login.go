@@ -25,7 +25,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Example response
 	response := map[string]string{"message": "Login successful"}
-	presentation.Response(w, 200, response)
+	presentation.ResponseOk(w, 200, response)
 
 	//presentation.ResponseErr(w, errors.New("abc"))
 
