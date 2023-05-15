@@ -5,6 +5,7 @@ import (
 	"github.com/harryosmar/go-chi-base/app/user/entities"
 	"github.com/harryosmar/go-chi-base/app/user/repositories"
 	codes "github.com/harryosmar/go-chi-base/errors"
+	"github.com/harryosmar/go-chi-base/logger"
 	"gorm.io/gorm"
 )
 
@@ -22,12 +23,14 @@ func NewUserService(userRepo repositories.CredentialRepository, profileRepositor
 }
 
 func (u userService) ValidateCredentials(ctx context.Context, c entities.ValidateCredentialRequest) (entities.ValidateCredentialResponse, error) {
+	logEntry := logger.GetLogEntryFromCtx(ctx)
 	userId, err := u.userRepo.GetUserByCredential(ctx, c.Username, c.Password)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return entities.ValidateCredentialResponse{}, codes.ErrLoginCredential
 		}
 
+		logEntry.Error(err)
 		return entities.ValidateCredentialResponse{}, err
 	}
 

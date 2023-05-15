@@ -18,6 +18,7 @@ func NewCredentialRepository(db *gorm.DB) CredentialRepository {
 }
 
 func (u credentialRepository) GetUserByCredential(ctx context.Context, username string, password string) (int64, error) {
+	//return 0, errors.New("credentialRepository.GetUserByCredential err")
 	if username == "febri@angel.com" {
 		return 1, nil
 	}

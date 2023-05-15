@@ -15,7 +15,7 @@ type profileRepository struct {
 	db *gorm.DB
 }
 
-func NewProfileRepository(db *gorm.DB) *profileRepository {
+func NewProfileRepository(db *gorm.DB) ProfileRepository {
 	return &profileRepository{db: db}
 }
 
