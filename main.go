@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/harryosmar/go-chi-base/handlers"
+	"github.com/harryosmar/go-chi-base/logger"
 	"github.com/harryosmar/go-chi-base/middlewares"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"net/http"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 func init() {
@@ -26,6 +26,7 @@ func init() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
+	middleware.DefaultLogger = middlewares.RequestLogger(logger.Logger)
 
 	// setup metrics
 	middlewares.InitPrometheusMetrics()

@@ -8,11 +8,11 @@ import (
 
 type ResponseContent struct {
 	Status      bool                   `json:"status"`
-	Message     string                 `json:"message"`
-	ErrorCode   string                 `json:"error_code"`
-	ErrorDetail string                 `json:"error_detail"`
+	Message     string                 `json:"message,omitempty"`
+	ErrorCode   string                 `json:"error_code,omitempty"`
+	ErrorDetail string                 `json:"error_detail,omitempty"`
 	Data        interface{}            `json:"data"`
-	MetaData    map[string]interface{} `json:"metadata"`
+	MetaData    map[string]interface{} `json:"metadata,omitempty"`
 }
 
 type ResponseEntity struct {
@@ -22,7 +22,12 @@ type ResponseEntity struct {
 }
 
 func NewResponseEntity() *ResponseEntity {
-	return &ResponseEntity{Content: ResponseContent{}}
+	return &ResponseEntity{
+		Content: ResponseContent{
+			MetaData: map[string]interface{}{},
+		},
+		Headers: map[string]string{},
+	}
 }
 
 func (r *ResponseEntity) WithStatusCode(statusCode int) *ResponseEntity {
@@ -31,7 +36,9 @@ func (r *ResponseEntity) WithStatusCode(statusCode int) *ResponseEntity {
 }
 
 func (r *ResponseEntity) WithHeaders(headers map[string]string) *ResponseEntity {
-	r.Headers = headers
+	for k, v := range headers {
+		r.Headers[k] = v
+	}
 	return r
 }
 
@@ -61,11 +68,27 @@ func (r *ResponseEntity) WithErrorDetail(detail string) *ResponseEntity {
 }
 
 func (r *ResponseEntity) WithMetaData(meta map[string]interface{}) *ResponseEntity {
-	r.Content.MetaData = meta
+	for k, v := range meta {
+		r.Content.MetaData[k] = v
+	}
 	return r
 }
 
-func (r *ResponseEntity) Write(w http.ResponseWriter) {
+type Paginator struct {
+	Limit  int `json:"limit"`
+	Offset int `json:"offset"`
+	Total  int `json:"total"`
+}
+
+func (r *ResponseEntity) WithPaginator(paginator Paginator) *ResponseEntity {
+	r.Content.MetaData["limit"] = paginator.Limit
+	r.Content.MetaData["offset"] = paginator.Offset
+	r.Content.MetaData["total"] = paginator.Total
+
+	return r
+}
+
+func (r *ResponseEntity) WriteJson(w http.ResponseWriter) {
 	statusText := http.StatusText(r.StatusCode)
 	if statusText == "" {
 		ResponseErr(w, codes.NewCodeErrf(codes.ErrInvalidStatusCode).Paramf(r.StatusCode))
@@ -78,5 +101,6 @@ func (r *ResponseEntity) Write(w http.ResponseWriter) {
 			w.Header().Set(k, v)
 		}
 	}
+
 	json.NewEncoder(w).Encode(r.Content)
 }

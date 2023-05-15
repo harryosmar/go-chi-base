@@ -20,7 +20,7 @@ func ResponseErr(w http.ResponseWriter, err error) {
 		WithMessage(respErr.String()).
 		WithErrorCode(respErr.Code()).
 		WithErrorDetail(respErr.Detail()).
-		Write(w)
+		WriteJson(w)
 }
 
 func ResponseOk(w http.ResponseWriter, statusCode int, data interface{}) {
@@ -28,7 +28,7 @@ func ResponseOk(w http.ResponseWriter, statusCode int, data interface{}) {
 		WithStatusCode(statusCode).
 		WithContentStatus(true).
 		WithData(data).
-		Write(w)
+		WriteJson(w)
 }
 
 func ResponseErrValidation(w http.ResponseWriter, err error) {
@@ -44,7 +44,7 @@ func ResponseErrValidation(w http.ResponseWriter, err error) {
 			WithMessage(codes.ErrValidation.String()).
 			WithErrorCode(codes.ErrValidation.Code()).
 			WithData(data).
-			Write(w)
+			WriteJson(w)
 
 		return
 	}
