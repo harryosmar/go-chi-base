@@ -8,7 +8,7 @@ import (
 
 var validate *validator.Validate
 
-func ValidateRequest[K any](r *http.Request, s K) error {
+func ValidateRequest[K any](r *http.Request, s *K) error {
 	if validate == nil {
 		validate = validator.New()
 	}

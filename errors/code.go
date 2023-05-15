@@ -29,12 +29,16 @@ var codeErrMap = map[CodeErr]codeErrEntity{
 	ErrGeneral:           {code: "ERRSVC5000", status: 500, message: defaultErrMessage},
 	ErrInvalidStatusCode: {code: "ERRSVC5001", status: 500, message: "invalid status code %d"},
 	ErrValidation:        {code: "ERRSVC4000", status: 400, message: "validation error"},
+	ErrLoginCredential:   {code: "ERRSVC4100", status: 400, message: "Login gagal, silakan cek username dan password Anda"},
+	ErrProfileNotExist:   {code: "ERRSVC4101", status: 400, message: "Login gagal, silakan cek username dan password Anda"},
 }
 
 const (
 	ErrGeneral CodeErr = iota
 	ErrInvalidStatusCode
 	ErrValidation
+	ErrLoginCredential
+	ErrProfileNotExist
 )
 
 func (c CodeErr) Error() string {

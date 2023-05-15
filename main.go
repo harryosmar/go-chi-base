@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/harryosmar/go-chi-base/handlers"
+	"github.com/harryosmar/go-chi-base/app/user/factories"
 	"github.com/harryosmar/go-chi-base/logger"
 	"github.com/harryosmar/go-chi-base/middlewares"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -69,10 +69,12 @@ func main() {
 
 // A completely separate router for administrator routes
 func apiRouter() http.Handler {
+	userHandler := factories.MakeUserHandler()
+
 	router := chi.NewRouter()
 	router.Use(middlewares.ResponseSetContentTypeJSON)
 
-	router.Post("/login", handlers.HandleLogin)
+	router.Post("/login", userHandler.Login)
 
 	return router
 }

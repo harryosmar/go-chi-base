@@ -41,8 +41,10 @@ func NewLogRequestEntry(logger *log.Logger, r *http.Request) *log.Entry {
 	logFields["remote_addr"] = r.RemoteAddr
 	logFields["user_agent"] = r.UserAgent()
 
-	payload, _ := httputil.DumpRequest(r, true)
-	logFields["payload"] = fmt.Sprintf("%s", payload)
+	payload, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		logFields["payload"] = fmt.Sprintf("%s", payload)
+	}
 
 	logFields["uri"] = fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
 
