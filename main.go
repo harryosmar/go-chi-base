@@ -36,11 +36,12 @@ func main() {
 	router := chi.NewRouter()
 
 	// A good base middlewares stack
-	router.Use(middleware.RequestID)
+	router.Use(middlewares.CustomRequestID)
 	router.Use(middleware.RealIP)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 	router.Use(middlewares.PrometheusMiddleware)
+	router.Use(middlewares.ResponseSetHeaderRequestId)
 
 	// Create a new Prometheus handler
 	handler := promhttp.Handler()
