@@ -2,46 +2,55 @@ package services
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/harryosmar/go-chi-base/app/user/entities"
 	"github.com/harryosmar/go-chi-base/app/user/repositories"
-	codes "github.com/harryosmar/go-chi-base/errors"
-	"github.com/harryosmar/go-chi-base/logger"
+	"github.com/harryosmar/go-chi-base/core/errors"
+	"github.com/harryosmar/go-chi-base/core/logger"
 	"gorm.io/gorm"
+	"time"
 )
 
+//go:generate mockgen -destination=mocks/mock_UserService.go -package=mocks . UserService
 type UserService interface {
-	ValidateCredentials(ctx context.Context, c entities.ValidateCredentialRequest) (entities.ValidateCredentialResponse, error)
+	Authenticate(ctx context.Context, c entities.AuthenticateRequest) (*entities.AuthenticateResponse, error)
+	ValidateToken(ctx context.Context, c entities.ValidateTokenRequest) (*entities.JwtClaim, error)
 }
 
 type userService struct {
-	userRepo          repositories.CredentialRepository
-	profileRepository repositories.ProfileRepository
+	tokenIssuer       string
+	accountRepository repositories.AccountRepository
 }
 
-func NewUserService(userRepo repositories.CredentialRepository, profileRepository repositories.ProfileRepository) UserService {
-	return &userService{userRepo: userRepo, profileRepository: profileRepository}
+func NewUserService(tokenIssuer string, accountRepository repositories.AccountRepository) UserService {
+	return &userService{tokenIssuer: tokenIssuer, accountRepository: accountRepository}
 }
 
-func (u userService) ValidateCredentials(ctx context.Context, c entities.ValidateCredentialRequest) (entities.ValidateCredentialResponse, error) {
+func (u userService) Authenticate(ctx context.Context, c entities.AuthenticateRequest) (*entities.AuthenticateResponse, error) {
 	logEntry := logger.GetLogEntryFromCtx(ctx)
-	userId, err := u.userRepo.GetUserByCredential(ctx, c.Username, c.Password)
+	account, err := u.accountRepository.GetProfileByUsername(ctx, c.Username)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return entities.ValidateCredentialResponse{}, codes.ErrLoginCredential
+			return nil, codes.ErrLoginCredential
 		}
 
 		logEntry.Error(err)
-		return entities.ValidateCredentialResponse{}, err
+		return nil, err
 	}
 
-	profile, err := u.profileRepository.GetProfileByUserId(ctx, userId)
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return entities.ValidateCredentialResponse{}, codes.ErrProfileNotExist
-		}
-
-		return entities.ValidateCredentialResponse{}, err
+	_ = entities.JwtClaim{
+		Email: account.Email,
+		Exp:   time.Now().Unix(),
+		Iat:   time.Now().Unix() + 86400,
+		Jti:   uuid.New().String(),
+		Name:  account.FullName,
+		Sub:   account.Username,
+		Iss:   "api.kursus-masak.id",
+		Aud:   "www.kursus-masak.id",
 	}
+	return &entities.AuthenticateResponse{Token: ""}, nil
+}
 
-	return entities.ValidateCredentialResponse{Message: "login berhasil", Profile: profile}, nil
+func (u userService) ValidateToken(ctx context.Context, c entities.ValidateTokenRequest) (*entities.JwtClaim, error) {
+	return &entities.JwtClaim{}, nil
 }

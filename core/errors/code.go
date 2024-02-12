@@ -31,7 +31,6 @@ var codeErrMap = map[CodeErr]codeErrEntity{
 	ErrValidation:                 {code: "ERRSVC4000", status: 400, message: "validation error"},
 	ErrValidationEmptyRequestBody: {code: "ERRSVC4001", status: 400, message: "validation error, empty request body"},
 	ErrLoginCredential:            {code: "ERRSVC4100", status: 400, message: "Login gagal, silakan cek username dan password Anda"},
-	ErrProfileNotExist:            {code: "ERRSVC4101", status: 400, message: "Login gagal, silakan cek username dan password Anda"},
 }
 
 const (
@@ -40,7 +39,6 @@ const (
 	ErrValidation
 	ErrValidationEmptyRequestBody
 	ErrLoginCredential
-	ErrProfileNotExist
 )
 
 func (c CodeErr) Error() string {

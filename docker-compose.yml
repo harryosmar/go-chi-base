@@ -1,0 +1,18 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - APP_ENV=
+      - APP_PORT=8080
+      - APP_DATABASE.HOST=localhost
+      - APP_DATABASE.PORT=3306
+      - APP_DATABASE.USERNAME=
+      - APP_DATABASE.PASSWORD=
+      - APP_TOKEN.PRIVATE_KEY=
+      - APP_TOKEN.PUBLIC_KEY=
+      - APP_TOKEN.EXP=24
+    ports:
+      - '8080:8080'

@@ -2,7 +2,7 @@ package presentation
 
 import (
 	"encoding/json"
-	codes "github.com/harryosmar/go-chi-base/errors"
+	"github.com/harryosmar/go-chi-base/core/errors"
 	"net/http"
 )
 

@@ -4,20 +4,17 @@ import (
 	"github.com/harryosmar/go-chi-base/app/user/handlers"
 	"github.com/harryosmar/go-chi-base/app/user/repositories"
 	"github.com/harryosmar/go-chi-base/app/user/services"
+	"github.com/spf13/viper"
 )
 
-func MakeUserRepository() repositories.CredentialRepository {
-	return repositories.NewCredentialRepository(nil)
-}
-
-func MakeProfileRepository() repositories.ProfileRepository {
+func MakeAccountRepository() repositories.AccountRepository {
 	return repositories.NewProfileRepository(nil)
 }
 
 func MakeUserService() services.UserService {
 	return services.NewUserService(
-		MakeUserRepository(),
-		MakeProfileRepository(),
+		viper.GetString("token.iss"),
+		MakeAccountRepository(),
 	)
 }
 

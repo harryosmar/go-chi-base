@@ -3,7 +3,7 @@ package validator
 import (
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
-	codes "github.com/harryosmar/go-chi-base/errors"
+	"github.com/harryosmar/go-chi-base/core/errors"
 	"net/http"
 )
 

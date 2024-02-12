@@ -2,7 +2,7 @@ package presentation
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/harryosmar/go-chi-base/errors"
+	"github.com/harryosmar/go-chi-base/core/errors"
 	"net/http"
 )
 

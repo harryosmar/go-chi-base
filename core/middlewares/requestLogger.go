@@ -3,7 +3,7 @@ package middlewares
 import (
 	"context"
 	"github.com/go-chi/chi/v5/middleware"
-	logger2 "github.com/harryosmar/go-chi-base/logger"
+	logger2 "github.com/harryosmar/go-chi-base/core/logger"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
